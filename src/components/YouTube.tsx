@@ -7,6 +7,25 @@ const DEFAULT_YOUTUBE_VIDEO_ID = "M7lc1UVf-VE";
 
 type YouTubePlayer = {};
 
+declare global {
+  interface Window {
+    onYouTubeIframeAPIReady: () => void;
+    YT: {
+      Player: {
+        new (
+          youtubePlayerId: string,
+          options: {
+            height: number;
+            width: number;
+            videoId: string;
+            playerVars: { playsinline: 1 };
+          }
+        ): YouTubePlayer;
+      };
+    };
+  }
+}
+
 const getYouTubePlayer = (
   videoId: string
 ): undefined | Promise<YouTubePlayer> => {
