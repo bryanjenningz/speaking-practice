@@ -22,7 +22,7 @@ const Home: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex min-h-screen flex-col items-center bg-black">
+      <main className="flex min-h-screen flex-col items-center bg-black text-white">
         <div className="container flex flex-col items-center justify-center gap-12 p-5">
           <form
             className="flex w-full max-w-2xl"
@@ -45,28 +45,30 @@ const Home: NextPage = () => {
             </button>
           </form>
           <YouTubePlayer videoState={videoState} />
-          <button
-            className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
-            onClick={() => {
-              const player = window.player;
-              if (!player) return;
-              setStartTime(player.getCurrentTime());
-            }}
-          >
-            Set start time
-          </button>
-          <span>{`Start time: ${startTime}`}</span>
-          <span>{`End time: ${endTime}`}</span>
-          <button
-            className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
-            onClick={() => {
-              const player = window.player;
-              if (!player) return;
-              setEndTime(player.getCurrentTime());
-            }}
-          >
-            Set end time
-          </button>
+          <section className="flex items-center gap-5">
+            <button
+              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+              onClick={() => {
+                const player = window.player;
+                if (!player) return;
+                setStartTime(player.getCurrentTime());
+              }}
+            >
+              Set start time
+            </button>
+            <div>{`Start time: ${startTime ?? "Not set"}`}</div>
+            <div>{`End time: ${endTime ?? "Not set"}`}</div>
+            <button
+              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+              onClick={() => {
+                const player = window.player;
+                if (!player) return;
+                setEndTime(player.getCurrentTime());
+              }}
+            >
+              Set end time
+            </button>
+          </section>
         </div>
       </main>
     </>
