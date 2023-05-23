@@ -57,8 +57,31 @@ const Home: NextPage = () => {
             >
               Set start
             </button>
-            <div>{`Start time: ${formatVideoTime(startTime)}`}</div>
-            <div>{`End time: ${formatVideoTime(endTime)}`}</div>
+
+            <button
+              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+              onClick={() =>
+                setStartTime((startTime) => Math.max(0, startTime - 0.2))
+              }
+            >{`<`}</button>
+            <div title="Start time">{formatVideoTime(startTime)}</div>
+            <button
+              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+              onClick={() => setStartTime((startTime) => startTime + 0.2)}
+            >{`>`}</button>
+
+            <button
+              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+              onClick={() =>
+                setEndTime((endTime) => Math.max(0, endTime - 0.2))
+              }
+            >{`<`}</button>
+            <div title="End time">{formatVideoTime(endTime)}</div>
+            <button
+              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+              onClick={() => setEndTime((endTime) => endTime + 0.2)}
+            >{`>`}</button>
+
             <button
               className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
               onClick={() => {
