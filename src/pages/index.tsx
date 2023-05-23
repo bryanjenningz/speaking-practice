@@ -49,22 +49,21 @@ const Home: NextPage = () => {
           <section className="flex items-center gap-5">
             <button
               className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+              onClick={() =>
+                setStartTime((startTime) => Math.max(0, startTime - 0.2))
+              }
+            >{`<`}</button>
+            <button
+              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
               onClick={() => {
                 const player = window.player;
                 if (!player) return;
                 setStartTime(player.getCurrentTime());
               }}
+              title="Start time"
             >
-              Set start
+              {formatVideoTime(startTime)}
             </button>
-
-            <button
-              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
-              onClick={() =>
-                setStartTime((startTime) => Math.max(0, startTime - 0.2))
-              }
-            >{`<`}</button>
-            <div title="Start time">{formatVideoTime(startTime)}</div>
             <button
               className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
               onClick={() => setStartTime((startTime) => startTime + 0.2)}
@@ -76,12 +75,6 @@ const Home: NextPage = () => {
                 setEndTime((endTime) => Math.max(0, endTime - 0.2))
               }
             >{`<`}</button>
-            <div title="End time">{formatVideoTime(endTime)}</div>
-            <button
-              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
-              onClick={() => setEndTime((endTime) => endTime + 0.2)}
-            >{`>`}</button>
-
             <button
               className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
               onClick={() => {
@@ -89,9 +82,14 @@ const Home: NextPage = () => {
                 if (!player) return;
                 setEndTime(player.getCurrentTime());
               }}
+              title="End time"
             >
-              Set end
+              {formatVideoTime(endTime)}
             </button>
+            <button
+              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+              onClick={() => setEndTime((endTime) => endTime + 0.2)}
+            >{`>`}</button>
           </section>
         </div>
       </main>
