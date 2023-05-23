@@ -12,7 +12,7 @@ type Clip = {
 };
 
 const Home: NextPage = () => {
-  const [videoId, setVideoId] = useState("HZtaSGLP1v8");
+  const [videoId, setVideoId] = useState(DEFAULT_YOUTUBE_VIDEO_ID);
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(0);
   const [clips, setClips] = useState<Clip[]>([]);
