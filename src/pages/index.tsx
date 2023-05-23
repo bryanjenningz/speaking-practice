@@ -6,12 +6,13 @@ import {
   YouTubePlayer,
   DEFAULT_YOUTUBE_VIDEO_ID,
 } from "~/components/YouTube";
+import { formatVideoTime } from "~/utils/formatVideoTime";
 
 const Home: NextPage = () => {
   const [videoState, setVideoState] = useState<VideoState>("HIDDEN");
   const [videoId, setVideoId] = useState("HZtaSGLP1v8");
-  const [startTime, setStartTime] = useState<null | number>(null);
-  const [endTime, setEndTime] = useState<null | number>(null);
+  const [startTime, setStartTime] = useState<number>(0);
+  const [endTime, setEndTime] = useState<number>(0);
   return (
     <>
       <Head>
@@ -54,10 +55,10 @@ const Home: NextPage = () => {
                 setStartTime(player.getCurrentTime());
               }}
             >
-              Set start time
+              Set start
             </button>
-            <div>{`Start time: ${startTime ?? "Not set"}`}</div>
-            <div>{`End time: ${endTime ?? "Not set"}`}</div>
+            <div>{`Start time: ${formatVideoTime(startTime)}`}</div>
+            <div>{`End time: ${formatVideoTime(endTime)}`}</div>
             <button
               className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
               onClick={() => {
@@ -66,7 +67,7 @@ const Home: NextPage = () => {
                 setEndTime(player.getCurrentTime());
               }}
             >
-              Set end time
+              Set end
             </button>
           </section>
         </div>
