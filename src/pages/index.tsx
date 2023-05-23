@@ -131,6 +131,8 @@ const Home: NextPage = () => {
                 <li key={clip.id}>
                   <button
                     onClick={() => {
+                      setStartTime(clip.startTime);
+                      setEndTime(clip.endTime);
                       const player = window.player;
                       if (!player) return;
                       player.seekTo(clip.startTime);
