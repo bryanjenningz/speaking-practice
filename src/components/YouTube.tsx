@@ -10,6 +10,9 @@ export type VideoState = "HIDDEN" | "PAUSED" | "PLAYING";
 type YouTubePlayer = {
   loadVideoById: (videoId: string) => void;
   getCurrentTime: () => number;
+  seekTo: (timeSeconds: number) => void;
+  playVideo: () => void;
+  pauseVideo: () => void;
 };
 
 declare global {

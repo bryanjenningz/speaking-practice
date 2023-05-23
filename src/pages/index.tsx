@@ -91,6 +91,22 @@ const Home: NextPage = () => {
               onClick={() => setEndTime((endTime) => endTime + 0.2)}
             >{`>`}</button>
           </section>
+          <section>
+            <button
+              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+              onClick={() => {
+                const player = window.player;
+                if (!player) return;
+                player.seekTo(startTime);
+                player.playVideo();
+                setTimeout(() => {
+                  player.pauseVideo();
+                }, (endTime - startTime) * 1000);
+              }}
+            >
+              Play clip
+            </button>
+          </section>
         </div>
       </main>
     </>
