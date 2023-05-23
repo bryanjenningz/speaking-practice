@@ -4,10 +4,18 @@ import { useState } from "react";
 import { YouTubePlayer, DEFAULT_YOUTUBE_VIDEO_ID } from "~/components/YouTube";
 import { formatVideoTime } from "~/utils/formatVideoTime";
 
+type Clip = {
+  id: number;
+  videoId: string;
+  startTime: number;
+  endTime: number;
+};
+
 const Home: NextPage = () => {
   const [videoId, setVideoId] = useState("HZtaSGLP1v8");
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(0);
+  const [clips, setClips] = useState<Clip[]>([]);
   return (
     <>
       <Head>
@@ -85,7 +93,8 @@ const Home: NextPage = () => {
               onClick={() => setEndTime((endTime) => endTime + 0.2)}
             >{`>`}</button>
           </section>
-          <section>
+
+          <section className="flex items-center gap-5">
             <button
               className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
               onClick={() => {
@@ -100,7 +109,43 @@ const Home: NextPage = () => {
             >
               Play clip
             </button>
+            <button
+              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+              onClick={() => {
+                setClips((clips) => [
+                  ...clips,
+                  { id: Math.random(), videoId, startTime, endTime },
+                ]);
+              }}
+            >
+              Save clip
+            </button>
           </section>
+
+          <ul>
+            {clips.map((clip) => {
+              const clipText = [clip.startTime, clip.endTime]
+                .map(formatVideoTime)
+                .join(" - ");
+              return (
+                <li key={clip.id}>
+                  <button
+                    onClick={() => {
+                      const player = window.player;
+                      if (!player) return;
+                      player.seekTo(clip.startTime);
+                      player.playVideo();
+                      setTimeout(() => {
+                        player.pauseVideo();
+                      }, (clip.endTime - clip.startTime) * 1000);
+                    }}
+                  >
+                    {clipText}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </main>
     </>
