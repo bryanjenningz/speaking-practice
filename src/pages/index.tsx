@@ -10,6 +10,8 @@ import {
 const Home: NextPage = () => {
   const [videoState, setVideoState] = useState<VideoState>("HIDDEN");
   const [videoId, setVideoId] = useState("HZtaSGLP1v8");
+  const [startTime, setStartTime] = useState<null | number>(null);
+  const [endTime, setEndTime] = useState<null | number>(null);
   return (
     <>
       <Head>
@@ -43,6 +45,28 @@ const Home: NextPage = () => {
             </button>
           </form>
           <YouTubePlayer videoState={videoState} />
+          <button
+            className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+            onClick={() => {
+              const player = window.player;
+              if (!player) return;
+              setStartTime(player.getCurrentTime());
+            }}
+          >
+            Set start time
+          </button>
+          <span>{`Start time: ${startTime}`}</span>
+          <span>{`End time: ${endTime}`}</span>
+          <button
+            className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+            onClick={() => {
+              const player = window.player;
+              if (!player) return;
+              setEndTime(player.getCurrentTime());
+            }}
+          >
+            Set end time
+          </button>
         </div>
       </main>
     </>
