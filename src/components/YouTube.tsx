@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
-import { classes } from "~/utils/classes";
 
 const YOUTUBE_API_URL = "https://www.youtube.com/iframe_api";
 const YOUTUBE_PLAYER_ID = "__youtube-player__";
 export const DEFAULT_YOUTUBE_VIDEO_ID = "M7lc1UVf-VE";
-
-export type VideoState = "HIDDEN" | "PAUSED" | "PLAYING";
 
 type YouTubePlayer = {
   loadVideoById: (videoId: string) => void;
@@ -62,19 +59,14 @@ const useYouTubePlayer = () => {
     typeof window === "undefined" ? undefined : window.player;
   const [player, setPlayer] = useState<undefined | YouTubePlayer>(globalPlayer);
   useEffect(() => {
-    (async () => {
+    void (async () => {
       setPlayer(await getYouTubePlayer(DEFAULT_YOUTUBE_VIDEO_ID));
     })();
   }, [globalPlayer]);
   return player;
 };
 
-export const YouTubePlayer = ({ videoState }: { videoState: VideoState }) => {
-  const player = useYouTubePlayer();
-  return (
-    <div
-      id={YOUTUBE_PLAYER_ID}
-      // className={classes(videoState === "HIDDEN" && "invisible")}
-    ></div>
-  );
+export const YouTubePlayer = () => {
+  useYouTubePlayer();
+  return <div id={YOUTUBE_PLAYER_ID}></div>;
 };

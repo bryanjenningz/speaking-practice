@@ -1,18 +1,13 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
-import {
-  type VideoState,
-  YouTubePlayer,
-  DEFAULT_YOUTUBE_VIDEO_ID,
-} from "~/components/YouTube";
+import { YouTubePlayer, DEFAULT_YOUTUBE_VIDEO_ID } from "~/components/YouTube";
 import { formatVideoTime } from "~/utils/formatVideoTime";
 
 const Home: NextPage = () => {
-  const [videoState, setVideoState] = useState<VideoState>("HIDDEN");
   const [videoId, setVideoId] = useState("HZtaSGLP1v8");
-  const [startTime, setStartTime] = useState<number>(0);
-  const [endTime, setEndTime] = useState<number>(0);
+  const [startTime, setStartTime] = useState(0);
+  const [endTime, setEndTime] = useState(0);
   return (
     <>
       <Head>
@@ -32,7 +27,6 @@ const Home: NextPage = () => {
               const player = window.player;
               if (!player) return;
               player.loadVideoById(videoId);
-              setVideoState("PLAYING");
             }}
           >
             <input
@@ -45,7 +39,7 @@ const Home: NextPage = () => {
               Done
             </button>
           </form>
-          <YouTubePlayer videoState={videoState} />
+          <YouTubePlayer />
           <section className="flex items-center gap-5">
             <button
               className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
