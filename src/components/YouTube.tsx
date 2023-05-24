@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 const YOUTUBE_API_URL = "https://www.youtube.com/iframe_api";
 const YOUTUBE_PLAYER_ID = "__youtube-player__";
+const VIDEO_WIDTH = 288;
+const VIDEO_HEIGHT = 208;
 export const DEFAULT_YOUTUBE_VIDEO_ID = "HZtaSGLP1v8";
 
 type YouTubePlayer = {
@@ -43,8 +45,8 @@ const getYouTubePlayer = (
   return new Promise((resolve) => {
     window.onYouTubeIframeAPIReady = () => {
       const player = new window.YT.Player(YOUTUBE_PLAYER_ID, {
-        height: 390,
-        width: 640,
+        height: VIDEO_HEIGHT,
+        width: VIDEO_WIDTH,
         videoId,
         playerVars: { playsinline: 1 },
       });
@@ -68,5 +70,5 @@ const useYouTubePlayer = () => {
 
 export const YouTubePlayer = () => {
   useYouTubePlayer();
-  return <div id={YOUTUBE_PLAYER_ID}></div>;
+  return <div className="h-52 w-72" id={YOUTUBE_PLAYER_ID}></div>;
 };
