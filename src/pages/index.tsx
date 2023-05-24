@@ -48,50 +48,54 @@ const Home: NextPage = () => {
             </button>
           </form>
           <YouTubePlayer />
-          <section className="flex items-center gap-5">
-            <button
-              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
-              onClick={() =>
-                setStartTime((startTime) => Math.max(0, startTime - 0.2))
-              }
-            >{`<`}</button>
-            <button
-              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
-              onClick={() => {
-                const player = window.player;
-                if (!player) return;
-                setStartTime(player.getCurrentTime());
-              }}
-              title="Start time"
-            >
-              {formatVideoTime(startTime)}
-            </button>
-            <button
-              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
-              onClick={() => setStartTime((startTime) => startTime + 0.2)}
-            >{`>`}</button>
+          <section className="flex flex-col gap-3">
+            <section className="flex items-center gap-5">
+              <button
+                className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+                onClick={() =>
+                  setStartTime((startTime) => Math.max(0, startTime - 0.2))
+                }
+              >{`<`}</button>
+              <button
+                className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+                onClick={() => {
+                  const player = window.player;
+                  if (!player) return;
+                  setStartTime(player.getCurrentTime());
+                }}
+                title="Start time"
+              >
+                {formatVideoTime(startTime)}
+              </button>
+              <button
+                className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+                onClick={() => setStartTime((startTime) => startTime + 0.2)}
+              >{`>`}</button>
+            </section>
 
-            <button
-              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
-              onClick={() =>
-                setEndTime((endTime) => Math.max(0, endTime - 0.2))
-              }
-            >{`<`}</button>
-            <button
-              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
-              onClick={() => {
-                const player = window.player;
-                if (!player) return;
-                setEndTime(player.getCurrentTime());
-              }}
-              title="End time"
-            >
-              {formatVideoTime(endTime)}
-            </button>
-            <button
-              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
-              onClick={() => setEndTime((endTime) => endTime + 0.2)}
-            >{`>`}</button>
+            <section className="flex items-center gap-5">
+              <button
+                className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+                onClick={() =>
+                  setEndTime((endTime) => Math.max(0, endTime - 0.2))
+                }
+              >{`<`}</button>
+              <button
+                className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+                onClick={() => {
+                  const player = window.player;
+                  if (!player) return;
+                  setEndTime(player.getCurrentTime());
+                }}
+                title="End time"
+              >
+                {formatVideoTime(endTime)}
+              </button>
+              <button
+                className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+                onClick={() => setEndTime((endTime) => endTime + 0.2)}
+              >{`>`}</button>
+            </section>
           </section>
 
           <section className="flex items-center gap-5">
