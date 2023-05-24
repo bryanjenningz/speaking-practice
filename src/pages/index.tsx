@@ -1,8 +1,9 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { YouTubePlayer, DEFAULT_YOUTUBE_VIDEO_ID } from "~/components/YouTube";
 import { formatVideoTime } from "~/utils/formatVideoTime";
+import { type Recorder, recordAudio } from "~/utils/recordAudio";
 
 type Clip = {
   id: number;
@@ -11,11 +12,60 @@ type Clip = {
   endTime: number;
 };
 
+type SavedAudio =
+  | { type: "NO_AUDIO_SAVED" }
+  | { type: "RECORDING_AUDIO" }
+  | { type: "RECORDED_AUDIO"; play: () => void };
+
+const MicrophoneSvg = () => {
+  return (
+    <svg height="24" viewBox="0 -960 960 960" width="24">
+      <path
+        fill="currentColor"
+        d="M479.972-389q-53.798 0-91.429-37.65-37.63-37.651-37.63-91.437v-238.326q0-53.786 37.658-91.437 37.659-37.65 91.457-37.65 53.798 0 91.429 37.65 37.63 37.651 37.63 91.437v238.326q0 53.786-37.658 91.437Q533.77-389 479.972-389Zm-43.559 283.587v-123.956q-108.065-14.479-178.457-96.855-70.391-82.376-70.391-191.863h87.413q0 85.152 59.983 145.087 59.983 59.935 145.087 59.935 85.104 0 145.039-59.969 59.935-59.969 59.935-145.053h87.413q0 109.544-70.391 191.892-70.392 82.347-178.457 96.826v123.956h-87.174Z"
+      />
+    </svg>
+  );
+};
+
+const StopSvg = () => {
+  return (
+    <svg height="24" viewBox="0 -960 960 960" width="24">
+      <path
+        fill="currentColor"
+        d="M231.869-231.869v-496.262h496.262v496.262H231.869Z"
+      />
+    </svg>
+  );
+};
+
+const PlaySvg = () => {
+  return (
+    <svg height="24" viewBox="0 -960 960 960" width="24">
+      <path
+        fill="currentColor"
+        d="M311.869-185.413v-589.174L775.066-480 311.869-185.413Z"
+      />
+    </svg>
+  );
+};
+
 const Home: NextPage = () => {
   const [videoId, setVideoId] = useState(DEFAULT_YOUTUBE_VIDEO_ID);
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(0);
   const [clips, setClips] = useState<Clip[]>([]);
+
+  const recorder = useRef<null | Recorder>();
+  useEffect(() => {
+    void (async () => {
+      recorder.current = await recordAudio();
+    })();
+  }, []);
+  const [savedAudio, setSavedAudio] = useState<SavedAudio>({
+    type: "NO_AUDIO_SAVED",
+  });
+
   return (
     <>
       <Head>
@@ -123,6 +173,66 @@ const Home: NextPage = () => {
               }}
             >
               Save clip
+            </button>
+          </section>
+
+          <section className="flex items-center gap-5">
+            <button
+              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
+              onClick={() => {
+                const audioRecorder = recorder.current;
+                if (!audioRecorder) return;
+
+                const record = () => {
+                  audioRecorder.start();
+                  setSavedAudio({ type: "RECORDING_AUDIO" });
+                };
+
+                const stop = async () => {
+                  const { play } = await audioRecorder.stop();
+                  setSavedAudio({ type: "RECORDED_AUDIO", play });
+                };
+
+                switch (savedAudio.type) {
+                  case "NO_AUDIO_SAVED":
+                    return record();
+                  case "RECORDING_AUDIO":
+                    return void stop();
+                  case "RECORDED_AUDIO":
+                    return record();
+                }
+              }}
+            >
+              {((): JSX.Element => {
+                switch (savedAudio.type) {
+                  case "NO_AUDIO_SAVED":
+                    return <MicrophoneSvg />;
+                  case "RECORDING_AUDIO":
+                    return <StopSvg />;
+                  case "RECORDED_AUDIO":
+                    return <MicrophoneSvg />;
+                }
+              })()}
+            </button>
+
+            <button
+              className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600 disabled:bg-slate-500"
+              onClick={() => {
+                if (savedAudio.type !== "RECORDED_AUDIO") return;
+                savedAudio.play();
+              }}
+              disabled={((): boolean => {
+                switch (savedAudio.type) {
+                  case "NO_AUDIO_SAVED":
+                    return true;
+                  case "RECORDING_AUDIO":
+                    return true;
+                  case "RECORDED_AUDIO":
+                    return false;
+                }
+              })()}
+            >
+              <PlaySvg />
             </button>
           </section>
 
