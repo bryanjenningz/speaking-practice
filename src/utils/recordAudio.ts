@@ -16,13 +16,16 @@ export const recordAudio = (): Promise<Recorder> => {
     void (async () => {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
-      const audioChunks: Blob[] = [];
+      let audioChunks: Blob[] = [];
 
       mediaRecorder.addEventListener("dataavailable", (event) => {
         audioChunks.push(event.data);
       });
 
-      const start: StartRecorder = () => mediaRecorder.start();
+      const start: StartRecorder = () => {
+        audioChunks = [];
+        mediaRecorder.start();
+      };
 
       const stop: StopRecorder = () =>
         new Promise((resolve) => {
