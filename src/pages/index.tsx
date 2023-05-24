@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { YouTubePlayer, DEFAULT_YOUTUBE_VIDEO_ID } from "~/components/YouTube";
 import { formatVideoTime } from "~/utils/formatVideoTime";
 import { type Recorder, recordAudio } from "~/utils/recordAudio";
@@ -57,11 +57,6 @@ const Home: NextPage = () => {
   const [clips, setClips] = useState<Clip[]>([]);
 
   const recorder = useRef<null | Recorder>();
-  useEffect(() => {
-    void (async () => {
-      recorder.current = await recordAudio();
-    })();
-  }, []);
   const [savedAudio, setSavedAudio] = useState<SavedAudio>({
     type: "NO_AUDIO_SAVED",
   });
@@ -181,7 +176,11 @@ const Home: NextPage = () => {
               className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
               onClick={() => {
                 const audioRecorder = recorder.current;
-                if (!audioRecorder) return;
+                if (!audioRecorder) {
+                  return void (async () => {
+                    recorder.current = await recordAudio();
+                  })();
+                }
 
                 const record = () => {
                   audioRecorder.start();
