@@ -1,9 +1,11 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { YouTubePlayer, DEFAULT_YOUTUBE_VIDEO_ID } from "~/components/YouTube";
 import { formatVideoTime } from "~/utils/formatVideoTime";
 import { type Recorder, recordAudio } from "~/utils/recordAudio";
+
+const LOCALSTORAGE_CLIPS_KEY = "__CLIPS__";
 
 type Clip = {
   id: number;
@@ -50,11 +52,53 @@ const PlaySvg = () => {
   );
 };
 
+const useClips = () => {
+  const [clips, setClips] = useState<Clip[]>([]);
+
+  const saveClips = (updateClips: (clips: Clip[]) => Clip[]) => {
+    setClips((clips) => {
+      const newClips = updateClips(clips);
+      localStorage.setItem(LOCALSTORAGE_CLIPS_KEY, JSON.stringify(newClips));
+      return newClips;
+    });
+  };
+
+  useEffect(() => {
+    try {
+      const clipsValue = localStorage.getItem(LOCALSTORAGE_CLIPS_KEY);
+      if (clipsValue === null) return;
+      const parsedValue: unknown = JSON.parse(clipsValue);
+      if (!Array.isArray(parsedValue)) return;
+      const parsedArray: unknown[] = parsedValue;
+      if (
+        !parsedArray.every(
+          (x): x is Clip =>
+            !!x &&
+            typeof x === "object" &&
+            "id" in x &&
+            typeof x.id === "number" &&
+            "videoId" in x &&
+            typeof x.videoId === "string" &&
+            "startTime" in x &&
+            typeof x.startTime === "number" &&
+            "endTime" in x &&
+            typeof x.endTime === "number"
+        )
+      ) {
+        return;
+      }
+      setClips(parsedArray);
+    } catch {}
+  }, []);
+
+  return { clips, saveClips };
+};
+
 const Home: NextPage = () => {
   const [videoId, setVideoId] = useState(DEFAULT_YOUTUBE_VIDEO_ID);
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(0);
-  const [clips, setClips] = useState<Clip[]>([]);
+  const { clips, saveClips } = useClips();
 
   const recorder = useRef<null | Recorder>();
   const [savedAudio, setSavedAudio] = useState<SavedAudio>({
@@ -161,7 +205,7 @@ const Home: NextPage = () => {
             <button
               className="bg-blue-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-blue-600"
               onClick={() => {
-                setClips((clips) => [
+                saveClips((clips) => [
                   ...clips,
                   { id: Math.random(), videoId, startTime, endTime },
                 ]);
@@ -260,7 +304,9 @@ const Home: NextPage = () => {
                   <button
                     className="flex items-center justify-center"
                     onClick={() =>
-                      setClips((clips) => clips.filter((c) => c.id !== clip.id))
+                      saveClips((clips) =>
+                        clips.filter((c) => c.id !== clip.id)
+                      )
                     }
                   >
                     <span aria-hidden={true}>✖</span>
