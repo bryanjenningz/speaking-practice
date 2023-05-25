@@ -34,6 +34,7 @@ export const recordAudio = (): Promise<Recorder> => {
             const audioUrl = URL.createObjectURL(audioBlob);
             const audio = new Audio(audioUrl);
             const play = () => void audio.play();
+            stream.getTracks().forEach((track) => track.stop());
             resolve({ audioBlob, audioUrl, play });
           });
 
