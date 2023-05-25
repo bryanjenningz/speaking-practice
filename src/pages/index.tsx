@@ -241,7 +241,7 @@ const Home: NextPage = () => {
                 .map(formatVideoTime)
                 .join(" - ");
               return (
-                <li key={clip.id}>
+                <li key={clip.id} className="flex items-center gap-3">
                   <button
                     onClick={() => {
                       setStartTime(clip.startTime);
@@ -256,6 +256,15 @@ const Home: NextPage = () => {
                     }}
                   >
                     {clipText}
+                  </button>
+                  <button
+                    className="flex items-center justify-center"
+                    onClick={() =>
+                      setClips((clips) => clips.filter((c) => c.id !== clip.id))
+                    }
+                  >
+                    <span aria-hidden={true}>✖</span>
+                    <span className="sr-only">Delete</span>
                   </button>
                 </li>
               );
