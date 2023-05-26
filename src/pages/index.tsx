@@ -77,7 +77,7 @@ const Home: NextPage = () => {
   const [endTime, setEndTime] = useState(0);
   const { clips, saveClips } = useClips();
 
-  const recorder = useRef<null | Recorder>();
+  const recorder = useRef<null | Recorder>(null);
   const [savedAudio, setSavedAudio] = useState<SavedAudio>({
     type: "NO_AUDIO_SAVED",
   });
@@ -210,33 +210,34 @@ const Home: NextPage = () => {
           <section className="flex items-center gap-5">
             <button
               className="flex flex-col items-center rounded-2xl bg-slate-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-slate-600"
-              onClick={() => {
-                const audioRecorder = recorder.current;
-                if (!audioRecorder) {
-                  return void (async () => {
-                    recorder.current = await recordAudio();
-                  })();
-                }
+              onClick={() =>
+                void (async () => {
+                  const audioRecorder =
+                    recorder.current ?? (await recordAudio());
+                  recorder.current = audioRecorder;
 
-                const record = () => {
-                  audioRecorder.start();
-                  setSavedAudio({ type: "RECORDING_AUDIO" });
-                };
+                  const record = () => {
+                    audioRecorder.start();
+                    setSavedAudio({ type: "RECORDING_AUDIO" });
+                  };
 
-                const stop = async () => {
-                  const { play } = await audioRecorder.stop();
-                  setSavedAudio({ type: "RECORDED_AUDIO", play });
-                };
+                  const stop = async () => {
+                    const { play } = await audioRecorder.stop();
+                    setSavedAudio({ type: "RECORDED_AUDIO", play });
+                    recorder.current = null;
+                    return;
+                  };
 
-                switch (savedAudio.type) {
-                  case "NO_AUDIO_SAVED":
-                    return record();
-                  case "RECORDING_AUDIO":
-                    return void stop();
-                  case "RECORDED_AUDIO":
-                    return record();
-                }
-              }}
+                  switch (savedAudio.type) {
+                    case "NO_AUDIO_SAVED":
+                      return record();
+                    case "RECORDING_AUDIO":
+                      return void stop();
+                    case "RECORDED_AUDIO":
+                      return record();
+                  }
+                })()
+              }
             >
               {((): JSX.Element => {
                 switch (savedAudio.type) {
