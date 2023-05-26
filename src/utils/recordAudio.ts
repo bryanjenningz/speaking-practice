@@ -20,7 +20,7 @@ export const recordAudio = (): Promise<Recorder> => {
         "audio/mpeg",
         "audio/webm",
         "audio/ogg",
-      ].find(MediaRecorder.isTypeSupported);
+      ].find((audioMimeType) => MediaRecorder.isTypeSupported(audioMimeType));
       const mediaRecorder = new MediaRecorder(stream, { mimeType });
       let audioChunks: Blob[] = [];
 
