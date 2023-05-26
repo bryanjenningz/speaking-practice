@@ -15,7 +15,13 @@ export const recordAudio = (): Promise<Recorder> => {
   return new Promise((resolve) => {
     void (async () => {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
+      const mimeType = [
+        "audio/wav",
+        "audio/mpeg",
+        "audio/webm",
+        "audio/ogg",
+      ].find(MediaRecorder.isTypeSupported);
+      const mediaRecorder = new MediaRecorder(stream, { mimeType });
       let audioChunks: Blob[] = [];
 
       mediaRecorder.addEventListener("dataavailable", (event) => {
@@ -30,7 +36,7 @@ export const recordAudio = (): Promise<Recorder> => {
       const stop: StopRecorder = () =>
         new Promise((resolve) => {
           mediaRecorder.addEventListener("stop", () => {
-            const audioBlob = new Blob(audioChunks, { type: "audio/mpeg" });
+            const audioBlob = new Blob(audioChunks, { type: mimeType });
             const audioUrl = URL.createObjectURL(audioBlob);
             const audio = new Audio(audioUrl);
             const play = () => void audio.play();
