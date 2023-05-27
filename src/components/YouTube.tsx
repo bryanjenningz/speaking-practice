@@ -1,21 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { PlaySvg } from "~/components/Icons";
 
-const YOUTUBE_API_URL = "https://www.youtube.com/iframe_api";
-const YOUTUBE_PLAYER_ID = "__youtube-player__";
-const VIDEO_WIDTH = 288;
-const VIDEO_HEIGHT = 208;
-const DEFAULT_YOUTUBE_VIDEO_ID = "hx3UIED9cQw";
-
-type YouTubePlayer = {
-  loadVideoById: (videoId: string) => void;
-  getCurrentTime: () => number;
-  seekTo: (timeSeconds: number) => void;
-  playVideo: () => void;
-  pauseVideo: () => void;
-  getVideoData: () => { title: string; video_id: string };
-};
-
 declare global {
   interface Window {
     onYouTubeIframeAPIReady: () => void;
@@ -35,6 +20,47 @@ declare global {
     player?: YouTubePlayer;
   }
 }
+
+type YouTubePlayer = {
+  loadVideoById: (videoId: string) => void;
+  getCurrentTime: () => number;
+  seekTo: (timeSeconds: number) => void;
+  playVideo: () => void;
+  pauseVideo: () => void;
+  getVideoData: () => { title: string; video_id: string };
+  getPlayerState: () => PlayerState;
+};
+
+type PlayerState = (typeof PLAYER_STATE)[keyof typeof PLAYER_STATE];
+
+const YOUTUBE_API_URL = "https://www.youtube.com/iframe_api";
+const YOUTUBE_PLAYER_ID = "__youtube-player__";
+const VIDEO_WIDTH = 288;
+const VIDEO_HEIGHT = 208;
+const DEFAULT_YOUTUBE_VIDEO_ID = "hx3UIED9cQw";
+
+const PLAYER_STATE = {
+  UNSTARTED: -1,
+  ENDED: 0,
+  PLAYING: 1,
+  PAUSED: 2,
+  BUFFERING: 3,
+  VIDEO_CUED: 5,
+} as const;
+
+const waitUntil = (condition: () => boolean): Promise<void> => {
+  return new Promise((resolve) => {
+    const waitTime = 10;
+    const intervalId = setInterval(() => {
+      if (!condition()) return;
+      clearInterval(intervalId);
+      resolve();
+    }, waitTime);
+  });
+};
+
+export const waitUntilPlayerIsPlaying = () =>
+  waitUntil(() => window.player?.getPlayerState() === PLAYER_STATE.PLAYING);
 
 const getYouTubePlayer = (
   videoId: string

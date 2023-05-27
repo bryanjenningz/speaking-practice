@@ -1,7 +1,11 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useRef, useState } from "react";
-import { YouTubePlayer, YouTubeSearch } from "~/components/YouTube";
+import {
+  YouTubePlayer,
+  YouTubeSearch,
+  waitUntilPlayerIsPlaying,
+} from "~/components/YouTube";
 import { Clips, useClips } from "~/components/Clips";
 import { ClipEditor } from "~/components/ClipEditor";
 import { AudioRecorder } from "~/components/AudioRecorder";
@@ -38,20 +42,23 @@ const Home: NextPage = () => {
           <Clips
             clips={clips}
             onPlayClip={(clip) => {
-              setStartTime(clip.startTime);
-              setEndTime(clip.endTime);
-              const player = window.player;
-              if (!player) return;
-              const { video_id: videoId } = player.getVideoData();
-              if (clip.videoId !== videoId) {
-                player.loadVideoById(clip.videoId);
-              }
-              player.seekTo(clip.startTime);
-              player.playVideo();
-              clearTimeout(lastPauseVideoTimeoutId.current);
-              lastPauseVideoTimeoutId.current = setTimeout(() => {
-                player.pauseVideo();
-              }, (clip.endTime - clip.startTime) * 1000);
+              void (async () => {
+                setStartTime(clip.startTime);
+                setEndTime(clip.endTime);
+                const player = window.player;
+                if (!player) return;
+                const { video_id: videoId } = player.getVideoData();
+                if (clip.videoId !== videoId) {
+                  player.loadVideoById(clip.videoId);
+                  await waitUntilPlayerIsPlaying();
+                }
+                player.seekTo(clip.startTime);
+                player.playVideo();
+                clearTimeout(lastPauseVideoTimeoutId.current);
+                lastPauseVideoTimeoutId.current = setTimeout(() => {
+                  player.pauseVideo();
+                }, (clip.endTime - clip.startTime) * 1000);
+              })();
             }}
             onDeleteClip={(deletedClip) => {
               saveClips((clips) =>
