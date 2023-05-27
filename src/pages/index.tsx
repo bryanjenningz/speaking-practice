@@ -20,6 +20,7 @@ const LOCALSTORAGE_CLIPS_KEY = "__CLIPS__";
 type Clip = {
   id: number;
   videoId: string;
+  title: string;
   startTime: number;
   endTime: number;
 };
@@ -42,6 +43,8 @@ const parseClips = (localStorageValue: string | null): Clip[] => {
       typeof x.id === "number" &&
       "videoId" in x &&
       typeof x.videoId === "string" &&
+      "title" in x &&
+      typeof x.title === "string" &&
       "startTime" in x &&
       typeof x.startTime === "number" &&
       "endTime" in x &&
@@ -203,9 +206,12 @@ const Home: NextPage = () => {
             <button
               className="flex flex-col items-center rounded-2xl bg-slate-700 px-4 py-2 uppercase text-white transition duration-300 hover:bg-slate-600"
               onClick={() => {
+                const player = window.player;
+                if (!player) return;
+                const { title } = player.getVideoData();
                 saveClips((clips) => [
                   ...clips,
-                  { id: Math.random(), videoId, startTime, endTime },
+                  { id: Math.random(), title, videoId, startTime, endTime },
                 ]);
               }}
             >
@@ -297,9 +303,12 @@ const Home: NextPage = () => {
 
           <ul className="flex w-full max-w-2xl flex-col gap-1">
             {clips.map((clip) => {
-              const clipText = [clip.startTime, clip.endTime]
-                .map(formatVideoTime)
-                .join(" - ");
+              const clipText = `${[...clip.title]
+                .slice(0, 8)
+                .join("")}... ${formatVideoTime(
+                clip.startTime
+              )} - ${formatVideoTime(clip.endTime)}`;
+
               return (
                 <li
                   key={clip.id}

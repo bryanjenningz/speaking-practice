@@ -12,6 +12,7 @@ type YouTubePlayer = {
   seekTo: (timeSeconds: number) => void;
   playVideo: () => void;
   pauseVideo: () => void;
+  getVideoData: () => { title: string; video_id: string };
 };
 
 declare global {
