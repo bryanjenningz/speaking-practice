@@ -4,7 +4,7 @@ const YOUTUBE_API_URL = "https://www.youtube.com/iframe_api";
 const YOUTUBE_PLAYER_ID = "__youtube-player__";
 const VIDEO_WIDTH = 288;
 const VIDEO_HEIGHT = 208;
-export const DEFAULT_YOUTUBE_VIDEO_ID = "HZtaSGLP1v8";
+export const DEFAULT_YOUTUBE_VIDEO_ID = "hx3UIED9cQw";
 
 type YouTubePlayer = {
   loadVideoById: (videoId: string) => void;
