@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useRef, useState } from "react";
-import { YouTubePlayer, DEFAULT_YOUTUBE_VIDEO_ID } from "~/components/YouTube";
+import { YouTubePlayer, YouTubeSearch } from "~/components/YouTube";
 import { formatVideoTime } from "~/utils/formatVideoTime";
 import {
   PlaySvg,
@@ -13,7 +13,6 @@ import { Clips, useClips } from "~/components/Clips";
 import { AudioRecorder } from "~/components/AudioRecorder";
 
 const Home: NextPage = () => {
-  const videoIdTextbox = useRef<null | HTMLInputElement>(null);
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(0);
   const { clips, saveClips } = useClips();
@@ -31,26 +30,7 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex min-h-screen flex-col items-center bg-black text-white">
         <div className="container flex flex-col items-center justify-center gap-3 p-4">
-          <form
-            className="relative flex w-full max-w-2xl"
-            onSubmit={(event) => {
-              event.preventDefault();
-              const player = window.player;
-              const videoIdTextboxValue = videoIdTextbox.current?.value;
-              if (!player || !videoIdTextboxValue) return;
-              player.loadVideoById(videoIdTextboxValue);
-            }}
-          >
-            <input
-              className="grow rounded-full bg-slate-700 py-2 pl-4 pr-10 text-white"
-              ref={videoIdTextbox}
-              placeholder={`Video ID (e.g. ${DEFAULT_YOUTUBE_VIDEO_ID})`}
-            />
-            <button className="absolute bottom-0 right-0 top-0 flex items-center justify-center px-2 transition duration-300 hover:text-slate-300">
-              <PlaySvg />
-              <span className="sr-only">Search</span>
-            </button>
-          </form>
+          <YouTubeSearch />
           <YouTubePlayer />
           <section className="flex flex-col gap-3">
             <section className="flex items-center gap-5">

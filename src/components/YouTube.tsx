@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { PlaySvg } from "~/components/Icons";
 
 const YOUTUBE_API_URL = "https://www.youtube.com/iframe_api";
 const YOUTUBE_PLAYER_ID = "__youtube-player__";
 const VIDEO_WIDTH = 288;
 const VIDEO_HEIGHT = 208;
-export const DEFAULT_YOUTUBE_VIDEO_ID = "hx3UIED9cQw";
+const DEFAULT_YOUTUBE_VIDEO_ID = "hx3UIED9cQw";
 
 type YouTubePlayer = {
   loadVideoById: (videoId: string) => void;
@@ -67,6 +68,33 @@ const useYouTubePlayer = () => {
     })();
   }, [globalPlayer]);
   return player;
+};
+
+export const YouTubeSearch = () => {
+  const videoIdTextbox = useRef<null | HTMLInputElement>(null);
+
+  return (
+    <form
+      className="relative flex w-full max-w-2xl"
+      onSubmit={(event) => {
+        event.preventDefault();
+        const player = window.player;
+        const videoIdTextboxValue = videoIdTextbox.current?.value;
+        if (!player || !videoIdTextboxValue) return;
+        player.loadVideoById(videoIdTextboxValue);
+      }}
+    >
+      <input
+        className="grow rounded-full bg-slate-700 py-2 pl-4 pr-10 text-white"
+        ref={videoIdTextbox}
+        placeholder={`Video ID (e.g. ${DEFAULT_YOUTUBE_VIDEO_ID})`}
+      />
+      <button className="absolute bottom-0 right-0 top-0 flex items-center justify-center px-2 transition duration-300 hover:text-slate-300">
+        <PlaySvg />
+        <span className="sr-only">Search</span>
+      </button>
+    </form>
+  );
 };
 
 export const YouTubePlayer = () => {
