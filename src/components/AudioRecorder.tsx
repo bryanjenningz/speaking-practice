@@ -51,21 +51,21 @@ export const AudioRecorder = () => {
               return (
                 <>
                   <MicrophoneSvg />
-                  <span className="text-[8px]">Speak</span>
+                  <span className="text-xs">Speak</span>
                 </>
               );
             case "RECORDING_AUDIO":
               return (
                 <>
                   <StopSvg />
-                  <span className="text-[8px]">Stop</span>
+                  <span className="text-xs">Stop</span>
                 </>
               );
             case "RECORDED_AUDIO":
               return (
                 <>
                   <MicrophoneSvg />
-                  <span className="text-[8px]">Speak</span>
+                  <span className="text-xs">Speak</span>
                 </>
               );
           }
@@ -90,7 +90,7 @@ export const AudioRecorder = () => {
         })()}
       >
         <AudioSvg />
-        <span className="text-[8px]">Listen</span>
+        <span className="text-xs">Listen</span>
       </button>
     </section>
   );
