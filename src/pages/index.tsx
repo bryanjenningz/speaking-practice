@@ -82,9 +82,7 @@ const useClips = () => {
 };
 
 const Home: NextPage = () => {
-  const [videoIdTextbox, setVideoIdTextbox] = useState(
-    DEFAULT_YOUTUBE_VIDEO_ID
-  );
+  const videoIdTextbox = useRef<null | HTMLInputElement>(null);
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(0);
   const { clips, saveClips } = useClips();
@@ -108,17 +106,17 @@ const Home: NextPage = () => {
         <div className="container flex flex-col items-center justify-center gap-3 p-4">
           <form
             className="relative flex w-full max-w-2xl"
-            onSubmit={(e) => {
-              e.preventDefault();
+            onSubmit={(event) => {
+              event.preventDefault();
               const player = window.player;
-              if (!player) return;
-              player.loadVideoById(videoIdTextbox);
+              const videoIdTextboxValue = videoIdTextbox.current?.value;
+              if (!player || !videoIdTextboxValue) return;
+              player.loadVideoById(videoIdTextboxValue);
             }}
           >
             <input
               className="grow rounded-full bg-slate-700 py-2 pl-4 pr-10 text-white"
-              value={videoIdTextbox}
-              onChange={(e) => setVideoIdTextbox(e.target.value)}
+              ref={videoIdTextbox}
               placeholder={`Video ID (e.g. ${DEFAULT_YOUTUBE_VIDEO_ID})`}
             />
             <button className="absolute bottom-0 right-0 top-0 flex items-center justify-center px-2 transition duration-300 hover:text-slate-300">
