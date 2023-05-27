@@ -245,7 +245,7 @@ const Home: NextPage = () => {
                     return (
                       <>
                         <MicrophoneSvg />
-                        <span className="text-[8px]">Record</span>
+                        <span className="text-[8px]">Speak</span>
                       </>
                     );
                   case "RECORDING_AUDIO":
@@ -259,7 +259,7 @@ const Home: NextPage = () => {
                     return (
                       <>
                         <MicrophoneSvg />
-                        <span className="text-[8px]">Record</span>
+                        <span className="text-[8px]">Speak</span>
                       </>
                     );
                 }
