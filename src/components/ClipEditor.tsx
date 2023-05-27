@@ -1,11 +1,16 @@
-import { formatVideoTime } from "~/utils/formatVideoTime";
-import { FastForwardSvg, FastRewindSvg, PlaySvg, SaveSvg } from "./Icons";
 import {
   type Dispatch,
   type MutableRefObject,
   type SetStateAction,
 } from "react";
-import { type Clip } from "./Clips";
+import { formatVideoTime } from "~/utils/formatVideoTime";
+import {
+  FastForwardSvg,
+  FastRewindSvg,
+  PlaySvg,
+  SaveSvg,
+} from "~/components/Icons";
+import { type Clip } from "~/components/Clips";
 
 export const ClipEditor = ({
   startTime,

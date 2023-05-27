@@ -1,6 +1,6 @@
-import { formatVideoTime } from "~/utils/formatVideoTime";
-import { CloseSvg } from "./Icons";
 import { useEffect, useState } from "react";
+import { formatVideoTime } from "~/utils/formatVideoTime";
+import { CloseSvg } from "~/components/Icons";
 
 export type Clip = {
   id: number;
