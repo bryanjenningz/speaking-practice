@@ -2,7 +2,7 @@ import { formatVideoTime } from "~/utils/formatVideoTime";
 import { CloseSvg } from "./Icons";
 import { useEffect, useState } from "react";
 
-type Clip = {
+export type Clip = {
   id: number;
   videoId: string;
   title: string;
