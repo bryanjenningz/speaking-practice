@@ -82,7 +82,9 @@ const useClips = () => {
 };
 
 const Home: NextPage = () => {
-  const [videoId, setVideoId] = useState(DEFAULT_YOUTUBE_VIDEO_ID);
+  const [videoIdTextbox, setVideoIdTextbox] = useState(
+    DEFAULT_YOUTUBE_VIDEO_ID
+  );
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(0);
   const { clips, saveClips } = useClips();
@@ -110,13 +112,13 @@ const Home: NextPage = () => {
               e.preventDefault();
               const player = window.player;
               if (!player) return;
-              player.loadVideoById(videoId);
+              player.loadVideoById(videoIdTextbox);
             }}
           >
             <input
               className="grow rounded-full bg-slate-700 py-2 pl-4 pr-10 text-white"
-              value={videoId}
-              onChange={(e) => setVideoId(e.target.value)}
+              value={videoIdTextbox}
+              onChange={(e) => setVideoIdTextbox(e.target.value)}
               placeholder={`Video ID (e.g. ${DEFAULT_YOUTUBE_VIDEO_ID})`}
             />
             <button className="absolute bottom-0 right-0 top-0 flex items-center justify-center px-2 transition duration-300 hover:text-slate-300">
@@ -208,7 +210,7 @@ const Home: NextPage = () => {
               onClick={() => {
                 const player = window.player;
                 if (!player) return;
-                const { title } = player.getVideoData();
+                const { title, video_id: videoId } = player.getVideoData();
                 saveClips((clips) => [
                   ...clips,
                   { id: Math.random(), title, videoId, startTime, endTime },
