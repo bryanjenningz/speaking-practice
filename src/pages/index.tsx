@@ -321,6 +321,10 @@ const Home: NextPage = () => {
                       setEndTime(clip.endTime);
                       const player = window.player;
                       if (!player) return;
+                      const { video_id: videoId } = player.getVideoData();
+                      if (clip.videoId !== videoId) {
+                        player.loadVideoById(clip.videoId);
+                      }
                       player.seekTo(clip.startTime);
                       player.playVideo();
                       setTimeout(() => {
