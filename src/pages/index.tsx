@@ -86,6 +86,7 @@ const Home: NextPage = () => {
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(0);
   const { clips, saveClips } = useClips();
+  const lastPauseVideoTimeoutId = useRef<NodeJS.Timeout>();
 
   const recorder = useRef<null | Recorder>(null);
   const [savedAudio, setSavedAudio] = useState<SavedAudio>({
@@ -195,7 +196,8 @@ const Home: NextPage = () => {
                 if (!player) return;
                 player.seekTo(startTime);
                 player.playVideo();
-                setTimeout(() => {
+                clearTimeout(lastPauseVideoTimeoutId.current);
+                lastPauseVideoTimeoutId.current = setTimeout(() => {
                   player.pauseVideo();
                 }, (endTime - startTime) * 1000);
               }}
@@ -327,7 +329,8 @@ const Home: NextPage = () => {
                       }
                       player.seekTo(clip.startTime);
                       player.playVideo();
-                      setTimeout(() => {
+                      clearTimeout(lastPauseVideoTimeoutId.current);
+                      lastPauseVideoTimeoutId.current = setTimeout(() => {
                         player.pauseVideo();
                       }, (clip.endTime - clip.startTime) * 1000);
                     }}
