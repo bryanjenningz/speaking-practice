@@ -29,6 +29,28 @@ type SavedAudio =
   | { type: "RECORDING_AUDIO" }
   | { type: "RECORDED_AUDIO"; play: () => void };
 
+const parseClips = (localStorageValue: string | null): Clip[] => {
+  if (!localStorageValue) return [];
+  const parsedValue: unknown = JSON.parse(localStorageValue);
+  if (!Array.isArray(parsedValue)) return [];
+  const values: unknown[] = parsedValue;
+  const isEveryValueAClip = values.every(
+    (x): x is Clip =>
+      !!x &&
+      typeof x === "object" &&
+      "id" in x &&
+      typeof x.id === "number" &&
+      "videoId" in x &&
+      typeof x.videoId === "string" &&
+      "startTime" in x &&
+      typeof x.startTime === "number" &&
+      "endTime" in x &&
+      typeof x.endTime === "number"
+  );
+  if (!isEveryValueAClip) return [];
+  return values;
+};
+
 const useClips = () => {
   const [clips, setClips] = useState<Clip[]>([]);
 
@@ -40,32 +62,17 @@ const useClips = () => {
     });
   };
 
+  // The reason why we have to use useEffect is because we're using server-side
+  // rendering (SSR) and the client and server both need to initially render the
+  // same values. If we set the clips to the parsed localStorage value, it would
+  // be different on the client and server since the server doesn't have
+  // localStorage.
   useEffect(() => {
     try {
-      const clipsValue = localStorage.getItem(LOCALSTORAGE_CLIPS_KEY);
-      if (clipsValue === null) return;
-      const parsedValue: unknown = JSON.parse(clipsValue);
-      if (!Array.isArray(parsedValue)) return;
-      const parsedArray: unknown[] = parsedValue;
-      if (
-        !parsedArray.every(
-          (x): x is Clip =>
-            !!x &&
-            typeof x === "object" &&
-            "id" in x &&
-            typeof x.id === "number" &&
-            "videoId" in x &&
-            typeof x.videoId === "string" &&
-            "startTime" in x &&
-            typeof x.startTime === "number" &&
-            "endTime" in x &&
-            typeof x.endTime === "number"
-        )
-      ) {
-        return;
-      }
-      setClips(parsedArray);
-    } catch {}
+      setClips(parseClips(localStorage.getItem(LOCALSTORAGE_CLIPS_KEY)));
+    } catch {
+      // Do nothing if there's an error accessing localStorage or parsing clips
+    }
   }, []);
 
   return { clips, saveClips };
