@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import {
   YouTubePlayer,
   YouTubeSearch,
+  setYouTubeVideoId,
   waitUntilPlayerIsPlaying,
 } from "~/components/YouTube";
 import { Clips, useClips } from "~/components/Clips";
@@ -49,7 +50,7 @@ const Home: NextPage = () => {
                 if (!player) return;
                 const { video_id: videoId } = player.getVideoData();
                 if (clip.videoId !== videoId) {
-                  player.loadVideoById(clip.videoId);
+                  setYouTubeVideoId(clip.videoId);
                   await waitUntilPlayerIsPlaying();
                 }
                 player.seekTo(clip.startTime);

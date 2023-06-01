@@ -38,6 +38,7 @@ const YOUTUBE_PLAYER_ID = "__youtube-player__";
 const VIDEO_WIDTH = 288;
 const VIDEO_HEIGHT = 208;
 const DEFAULT_YOUTUBE_VIDEO_ID = "pKW-fALc3AA";
+const LOCALSTORAGE_YOUTUBE_VIDEO_ID_KEY = "__YOUTUBE_VIDEO_ID__";
 
 const PLAYER_STATE = {
   UNSTARTED: -1,
@@ -90,10 +91,22 @@ const useYouTubePlayer = () => {
   const [player, setPlayer] = useState<undefined | YouTubePlayer>(globalPlayer);
   useEffect(() => {
     void (async () => {
-      setPlayer(await getYouTubePlayer(DEFAULT_YOUTUBE_VIDEO_ID));
+      setPlayer(
+        await getYouTubePlayer(
+          localStorage.getItem(LOCALSTORAGE_YOUTUBE_VIDEO_ID_KEY) ||
+            DEFAULT_YOUTUBE_VIDEO_ID
+        )
+      );
     })();
   }, [globalPlayer]);
   return player;
+};
+
+export const setYouTubeVideoId = (videoId: string) => {
+  const player = window.player;
+  if (!player || !videoId) return;
+  player.loadVideoById(videoId);
+  localStorage.setItem(LOCALSTORAGE_YOUTUBE_VIDEO_ID_KEY, videoId);
 };
 
 export const YouTubeSearch = () => {
@@ -104,10 +117,7 @@ export const YouTubeSearch = () => {
       className="relative flex w-full max-w-2xl"
       onSubmit={(event) => {
         event.preventDefault();
-        const player = window.player;
-        const videoIdTextboxValue = videoIdTextbox.current?.value;
-        if (!player || !videoIdTextboxValue) return;
-        player.loadVideoById(videoIdTextboxValue);
+        setYouTubeVideoId(videoIdTextbox.current?.value ?? "");
       }}
     >
       <input
