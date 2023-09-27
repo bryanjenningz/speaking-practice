@@ -23,9 +23,11 @@ const Home: NextPage = () => {
         <title>Speaking Practice</title>
         <meta
           name="description"
-          content="Practice speaking in a foreign language by using YouTube."
+          content="Save YouTube clips and record yourself trying to sound like the speaker."
         />
         <link rel="icon" href="/favicon.ico" />
+        <meta name="theme-color" content="#000" />
+        <link rel="manifest" href="/app.webmanifest" />
       </Head>
       <main className="flex min-h-screen flex-col items-center bg-black text-white">
         <div className="container flex flex-col items-center justify-center gap-3 p-4">
