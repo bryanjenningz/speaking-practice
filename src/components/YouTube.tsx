@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { PlaySvg } from "~/components/Icons";
+import { parseVideoId } from "~/utils/parseVideoId";
 
 declare global {
   interface Window {
@@ -117,7 +118,7 @@ export const YouTubeSearch = () => {
       className="relative flex w-full max-w-2xl"
       onSubmit={(event) => {
         event.preventDefault();
-        setYouTubeVideoId(videoIdTextbox.current?.value ?? "");
+        setYouTubeVideoId(parseVideoId(videoIdTextbox.current?.value ?? ""));
       }}
     >
       <input
